@@ -26,4 +26,6 @@ function onBtnStopClick() {
   btnStop.disabled = true;
   clearInterval(changeColor);
   console.log("Stop change color");
-  };
+};
+  
+console.log("Stop change color");
