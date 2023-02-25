@@ -27,3 +27,4 @@ function onBtnStopClick() {
   clearInterval(changeColor);
   console.log("Stop change color");
 };
+1
