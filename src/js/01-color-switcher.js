@@ -17,7 +17,7 @@ function onBtnStartClick() {
   btnStop.disabled = false;
   const body = document.body;
 
-  changeColor = setInterval(() => {
+  let = changeColor = setInterval(() => {
     body.style.backgroundColor = getRandomHexColor();
   }, 1000);
   console.log("Start color change");
