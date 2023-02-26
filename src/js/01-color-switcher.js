@@ -18,12 +18,12 @@ function onBtnStartClick() {
   changeColor = setInterval(() => {
     body.style.backgroundColor = getRandomHexColor();
   }, 1000);
-    console.log("Start change color");
-
+  console.log("Start color change");
 };
+
 function onBtnStopClick() {
   btnStart.disabled = false;
   btnStop.disabled = true;
   clearInterval(changeColor);
-  console.log("Stop change color");
+  console.log("Stop color change");
 };
