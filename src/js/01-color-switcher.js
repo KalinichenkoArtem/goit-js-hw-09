@@ -3,7 +3,7 @@ const btnStop = document.querySelector('[data-stop]');
 
 btnStop.disabled = true;
 
-let changeColor;
+let changeColor = null;
 
 btnStart.addEventListener('click', onBtnStartClick);
 btnStop.addEventListener('click', onBtnStopClick);
