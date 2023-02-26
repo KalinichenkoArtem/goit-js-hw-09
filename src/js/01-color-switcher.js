@@ -12,7 +12,7 @@ btnStart.addEventListener('click', () => {
   btnStop.disabled = false;
   const body = document.body;
 
-  changeColor = setInterval(() => {
+  const changeColor = setInterval(() => {
     body.style.backgroundColor = getRandomHexColor();
   }, 1000);
   console.log("Start color change");
