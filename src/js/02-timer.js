@@ -17,6 +17,11 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
     onClose(selectedDates) {
+        if (selectedDates[0] <= new Date()) {
+            Notiflix.Notify.failure('Please choose a date in the future');
+        } else {
+            btnStart.disabled = false;
+        }
         userDate = selectedDates;
       console.log(selectedDates[0]);
 },
@@ -40,11 +45,11 @@ const timer = {
     },
 };
 
-if (inputDate > currentDate) {
-    alert("Please choose a date in the future");
-    } if (inputDate < currentDate) {
-        btnStart.disabled = false;
-};
+// if (inputDate > currentDate) {
+//     alert("Please choose a date in the future");
+//     } if (inputDate < currentDate) {
+//         btnStart.disabled = false;
+// };
     
 btnStart.addEventListener('click', () => {
     timer.start();
