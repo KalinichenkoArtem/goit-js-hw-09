@@ -11,6 +11,8 @@ const refs = {
   timerSeconds: document.querySelector('[data-seconds]'),
 };
 
+refs.btnStart.disabled = true;
+
 const DELAY_INTERVAL = 1000;
 let intervalId = null;
 let selectedTimeInMs = null;
@@ -25,9 +27,9 @@ const options = {
   onClose: function (selectedDates) {
     if (selectedDates[0] <= new Date()) {
       Notify.failure('Please choose a date in the future!');
-      refs.btnStart.setAttribute('disabled', true);
+      refs.btnStart.disabled = true;
     } else {
-      refs.btnStart.removeAttribute('disabled');
+      refs.btnStart.disabled = false;
       selectedTimeInMs = Date.parse(selectedDates) - Date.now();
       objectTime = convertMs(selectedTimeInMs);
     }
@@ -39,12 +41,12 @@ flatpickr(refs.input, options);
 refs.btnStart.addEventListener('click', onStartTimer);
 
 function onStartTimer(selectedDates) {
-  refs.btnStart.setAttribute('disabled', true);
-  refs.input.setAttribute('disabled', true);
+  refs.btnStart.disabled = false;
+  refs.input.disabled = true;
   intervalId = setInterval(() => {
     if (selectedTimeInMs <= 0) {
-      refs.btnStart.removeAttribute('disabled');
-      refs.input.removeAttribute('disabled');
+      refs.btnStart.disabled = false;
+      refs.input.disabled = false;
       clearInterval(intervalId);
       return;
     }
