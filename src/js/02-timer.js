@@ -1,60 +1,62 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-const input = document.querySelector('#datetime-picker');
-const btnStart = document.querySelector('[data-start]');
+const refs = {
+  btnStart: document.querySelector('[data-start]'),
+  input: document.querySelector('#datetime-picker'),
+  timerDays: document.querySelector('[data-days]'),
+  timerHours: document.querySelector('[data-hours]'),
+  timerMinutes: document.querySelector('[data-minutes]'),
+  timerSeconds: document.querySelector('[data-seconds]'),
+};
 
-btnStart.disabled = true;
-
-const inputDate = new Date(input.value).getTime();
-const currentDate = Date.now();
-
-let selectedDates = null;
+const DELAY_INTERVAL = 1000;
+let intervalId = null;
+let selectedTimeInMs = null;
+let objectTime = {};
 
 const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-    onClose(selectedDates) {
-        if (selectedDates[0] <= new Date()) {
-            Notiflix.Notify.failure('Please choose a date in the future');
-        } else {
-            btnStart.disabled = false;
-        }
-        userDate = selectedDates;
-      console.log(selectedDates[0]);
-},
+  parseDate: true,
+  onClose: function (selectedDates) {
+    if (selectedDates[0] <= new Date()) {
+      // alert('Оберіь дату або час в майбутньому!');
+      Notify.failure('Please choose a date in the future!');
+      refs.btnStart.setAttribute('disabled', true);
+    } else {
+      refs.btnStart.removeAttribute('disabled');
+      selectedTimeInMs = Date.parse(selectedDates) - Date.now();
+      objectTime = convertMs(selectedTimeInMs);
+    }
+  },
 };
 
-flatpickr(input, { options });
+flatpickr(refs.input, options);
 
-const timer = {
-    intervalId: null,
-    isActive: false,
-    start() {
-        if (this.isActive) {
-            return;
-        }
-    
-        this.isActive = true;
-        this.intervalId = setInterval(() => {
-            const deltaTime = selectedDates - currentDate;
-            const { days, hours, minutes, seconds } = convertMs(deltaTime);
-        }, 1000);
-    },
-};
+refs.btnStart.addEventListener('click', onStartTimer);
 
-// if (inputDate > currentDate) {
-//     alert("Please choose a date in the future");
-//     } if (inputDate < currentDate) {
-//         btnStart.disabled = false;
-// };
-    
-btnStart.addEventListener('click', () => {
-    timer.start();
-    btnStart.disabled = true;
-});
+function onStartTimer(selectedDates) {
+  refs.btnStart.setAttribute('disabled', true);
+  refs.input.setAttribute('disabled', true);
+  intervalId = setInterval(() => {
+    if (selectedTimeInMs <= 0) {
+      refs.btnStart.removeAttribute('disabled');
+      refs.input.removeAttribute('disabled');
+      clearInterval(intervalId);
+      return;
+    }
+    objectTime = convertMs(selectedTimeInMs);
+    refs.timerDays.textContent = addLeadingZero(objectTime.days);
+    refs.timerHours.textContent = addLeadingZero(objectTime.hours);
+    refs.timerMinutes.textContent = addLeadingZero(objectTime.minutes);
+    refs.timerSeconds.textContent = addLeadingZero(objectTime.seconds);
+    selectedTimeInMs -= DELAY_INTERVAL;
+  }, DELAY_INTERVAL);
+}
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -73,4 +75,8 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
-};
+}
+
+function addLeadingZero(value) {
+  return String(value).padStart(2, '0');
+}
